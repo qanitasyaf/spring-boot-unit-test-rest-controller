@@ -1,0 +1,13 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'telegram-receiver'
+
+receivers:
+  - name: 'telegram-receiver'
+    telegram_configs:
+      - bot_token: '7737408450:AAHu8ycMTpUr6LMxPSZJ1qgqwkv8xLneU4Q'
+        chat_id: 1330543866
+        message: '{{ range .Alerts }}🔥 *Alert:* {{ .Annotations.summary }} ({{ .Labels.severity }}){{ end }}'
+        parse_mode: 'Markdown'

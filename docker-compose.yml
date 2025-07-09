@@ -1,5 +1,7 @@
 services:
   jenkins:
+    build:
+      context: ./jenkins
     image: jenkins/jenkins:lts
     container_name: jenkins
     ports:
@@ -7,10 +9,12 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     privileged: true
+    user: root
     networks:
       - cicd-net
- 
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
@@ -19,7 +23,7 @@ services:
       - cicd-net
     depends_on:
       - jenkins
- 
+
   sonarqube:
     image: sonarqube:community
     container_name: sonarqube
@@ -38,7 +42,7 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
     networks:
       - cicd-net
- 
+
   db:
     image: postgres:13
     container_name: sonar-postgres
@@ -51,7 +55,7 @@ services:
       - postgresql_data:/var/lib/postgresql/data
     networks:
       - cicd-net
- 
+
 volumes:
   jenkins_home:
   sonarqube_conf:
@@ -60,7 +64,8 @@ volumes:
   sonarqube_extensions:
   postgresql:
   postgresql_data:
- 
+
 networks:
   cicd-net:
     driver: bridge
+
